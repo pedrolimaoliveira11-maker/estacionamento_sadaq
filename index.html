@@ -1,1 +1,589 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estacionamento Flash | Gestão & Controle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-dark: #1d4ed8;
+            --bg: #f1f5f9;
+            --card: #ffffff;
+            --text: #1e293b;
+            --muted: #64748b;
+            --border: #e2e8f0;
+            --success: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.5;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #0f172a, #1e293b);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-badge {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 25px auto;
+            padding: 0 20px;
+        }
+
+        /* Alertas */
+        .alert {
+            padding: 14px 18px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .alert-sucesso {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-erro {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fecaca;
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 25px;
+        }
+
+        .kpi-card {
+            background: var(--card);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+        }
+
+        .kpi-title {
+            font-size: 0.85rem;
+            color: var(--muted);
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .kpi-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-top: 5px;
+        }
+
+        .text-green {
+            color: var(--success);
+        }
+
+        .text-red {
+            color: var(--danger);
+        }
+
+        .text-blue {
+            color: var(--primary);
+        }
+
+        /* Cards Gerais */
+        .card {
+            background: var(--card);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            margin-bottom: 25px;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 18px;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 12px;
+        }
+
+        .card-header h2 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #0f172a;
+        }
+
+        /* Mapa de Vagas */
+        .grid-vagas {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+            gap: 12px;
+        }
+
+        .vaga {
+            padding: 15px 10px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            border: 2px solid transparent;
+            transition: transform 0.15s ease;
+        }
+
+        .vaga:hover {
+            transform: translateY(-2px);
+        }
+
+        .vaga.livre {
+            background: #ecfdf5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        .vaga.ocupada {
+            background: #fef2f2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        .vaga-num {
+            font-size: 1.2rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .vaga-tipo {
+            font-size: 0.75rem;
+            opacity: 0.85;
+            display: block;
+            margin: 2px 0;
+        }
+
+        .vaga-status {
+            font-size: 0.7rem;
+            padding: 2px 8px;
+            border-radius: 12px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        .livre .vaga-status {
+            background: #10b981;
+            color: white;
+        }
+
+        .ocupada .vaga-status {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* Formulário */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .form-group label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #334155;
+        }
+
+        input,
+        select {
+            padding: 10px 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            outline: none;
+            transition: border 0.2s;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-submit {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            grid-column: 1 / -1;
+            margin-top: 5px;
+            transition: background 0.2s;
+        }
+
+        .btn-submit:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Tabelas */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.92rem;
+        }
+
+        th {
+            background: #f8fafc;
+            color: #475569;
+            font-weight: 600;
+            text-align: left;
+            padding: 12px 15px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        td {
+            padding: 12px 15px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        tr:hover td {
+            background: #f8fafc;
+        }
+
+        .placa-badge {
+            background: #e2e8f0;
+            color: #0f172a;
+            font-family: monospace;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 5px;
+            border: 1px solid #94a3b8;
+            font-size: 0.95rem;
+        }
+
+        .plano-badge {
+            background: #dbeafe;
+            color: #1e40af;
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            font-weight: 600;
+        }
+
+        .btn-saida {
+            background: var(--warning);
+            color: #fff;
+            padding: 7px 12px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85rem;
+            display: inline-block;
+            transition: opacity 0.2s;
+        }
+
+        .btn-saida:hover {
+            opacity: 0.9;
+        }
+
+        .empty-msg {
+            text-align: center;
+            color: var(--muted);
+            padding: 20px;
+        }
+
+        .search-input {
+            width: 260px;
+            padding: 8px 12px;
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="header-content">
+            <h1>Estacionamento Flash</h1>
+            <span class="header-badge">Sistema Integrado SQLite</span>
+        </div>
+    </header>
+
+    <div class="container">
+
+        <!-- Mensagens de Alerta -->
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">
+            <span>{{ message }}</span>
+            <span style="cursor:pointer;" onclick="this.parentElement.remove()">✕</span>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <!-- Indicadores (KPIs) -->
+        <div class="kpi-grid">
+            <div class="kpi-card">
+                <div class="kpi-title">Vagas Livres</div>
+                <div class="kpi-value text-green">{{ vagas_livres }} <small
+                        style="font-size: 0.9rem; color: var(--muted);">/ {{ vagas|length }}</small></div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Vagas Ocupadas</div>
+                <div class="kpi-value text-red">{{ vagas_ocupadas }}</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Veículos no Pátio</div>
+                <div class="kpi-value text-blue">{{ ativos|length }}</div>
+            </div>
+            <div class="kpi-card">
+                <div class="kpi-title">Faturamento Total</div>
+                <div class="kpi-value text-green">R$ {{ "%.2f"|format(total_faturado) }}</div>
+            </div>
+        </div>
+
+        <!-- Mapa de Vagas -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Mapa de Vagas em Tempo Real</h2>
+            </div>
+            <div class="grid-vagas">
+                {% for v in vagas %}
+                <div class="vaga {{ 'ocupada' if v.ocupada else 'livre' }}">
+                    <span class="vaga-num">{{ v.numero }}</span>
+                    <span class="vaga-tipo">{{ v.tipo }}</span>
+                    <span class="vaga-status">{{ 'Ocupada' if v.ocupada else 'Livre' }}</span>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Formulário de Entrada -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Nova Entrada de Veículo</h2>
+            </div>
+            <form action="/entrada" method="POST" class="form-grid">
+                <div class="form-group">
+                    <label>Nome do Cliente *</label>
+                    <input type="text" name="nome_cliente" placeholder="Ex: João Silva" required>
+                </div>
+                <div class="form-group">
+                    <label>Telefone</label>
+                    <input type="text" name="telefone" placeholder="(41) 99999-9999">
+                </div>
+                <div class="form-group">
+                    <label>Placa do Veículo *</label>
+                    <input type="text" name="placa" placeholder="ABC-1234" style="text-transform: uppercase;" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Modelo / Marca *</label>
+                    <input type="text" name="modelo_marca" placeholder="Ex: Onix / Chevrolet" required>
+                </div>
+                <div class="form-group">
+                    <label>Cor</label>
+                    <input type="text" name="cor" placeholder="Ex: Prata">
+                </div>
+                <div class="form-group">
+                    <label>Ano</label>
+                    <input type="number" name="ano" placeholder="Ex: 2023" min="1950" max="2030">
+                </div>
+
+                <div class="form-group">
+                    <label>Tamanho</label>
+                    <select name="tamanho">
+                        <option value="Pequeno">Pequeno</option>
+                        <option value="Médio" selected>Médio</option>
+                        <option value="Grande">Grande</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Tipo de Veículo</label>
+                    <select name="tipo_veiculo">
+                        <option value="Carro">Carro</option>
+                        <option value="Moto">Moto</option>
+                        <option value="Caminhonete">Caminhonete</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Selecionar Vaga Livre *</label>
+                    <select name="vaga_id" required>
+                        <option value="">-- Escolha uma Vaga --</option>
+                        {% for v in vagas if not v.ocupada %}
+                        <option value="{{ v.id }}">Vaga {{ v.numero }} ({{ v.tipo }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group" style="grid-column: 1 / -1;">
+                    <label>Plano de Cobrança *</label>
+                    <select name="tipo_cobranca" required>
+                        <option value="hora">Por Hora — R$ {{ "%.2f"|format(precos.hora) }} / hora</option>
+                        <option value="diaria">Diária — R$ {{ "%.2f"|format(precos.diaria) }}</option>
+                        <option value="anual">Mensalista / Anual — R$ {{ "%.2f"|format(precos.anual) }}</option>
+                    </select>
+                </div>
+
+                <button type="submit" class="btn-submit">Registrar Entrada no Estacionamento</button>
+            </form>
+        </div>
+
+        <!-- Veículos Estacionados -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Veículos Estacionados no Momento</h2>
+            </div>
+            <div class="table-responsive">
+                {% if ativos %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Vaga</th>
+                            <th>Placa</th>
+                            <th>Veículo</th>
+                            <th>Cliente</th>
+                            <th>Entrada</th>
+                            <th>Plano</th>
+                            <th>Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for a in ativos %}
+                        <tr>
+                            <td><strong>{{ a.vaga }}</strong> <small style="color:var(--muted)">({{ a.tipo_vaga
+                                    }})</small></td>
+                            <td><span class="placa-badge">{{ a.placa }}</span></td>
+                            <td>{{ a.modelo_marca }} <small style="color:var(--muted)">{{ a.cor }}</small></td>
+                            <td>{{ a.cliente }}</td>
+                            <td>{{ a.entrada_br }}</td>
+                            <td><span class="plano-badge">{{ a.tipo_cobranca.upper() }}</span></td>
+                            <td>
+                                <a href="/saida/{{ a.id }}" class="btn-saida"
+                                    onclick="return confirm('Confirmar saída e pagamento do veículo {{ a.placa }}?')">
+                                    Finalizar / Cobrar
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="empty-msg">Nenhum veículo estacionado no momento.</p>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Relatório Financeiro -->
+        <div class="card">
+            <div class="card-header">
+                <h2>Relatório de Movimentações Concluídas</h2>
+                <input type="text" id="filtroHistorico" class="search-input" placeholder="Buscar placa ou cliente..."
+                    onkeyup="filtrarTabela()">
+            </div>
+            <div class="table-responsive">
+                {% if historico %}
+                <table id="tabelaHistorico">
+                    <thead>
+                        <tr>
+                            <th>Placa</th>
+                            <th>Veículo</th>
+                            <th>Cliente</th>
+                            <th>Entrada</th>
+                            <th>Saída</th>
+                            <th>Plano</th>
+                            <th>Valor Pago</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for h in historico %}
+                        <tr>
+                            <td><span class="placa-badge">{{ h.placa }}</span></td>
+                            <td>{{ h.modelo_marca }}</td>
+                            <td>{{ h.cliente }}</td>
+                            <td>{{ h.entrada_br }}</td>
+                            <td>{{ h.saida_br }}</td>
+                            <td><span class="plano-badge">{{ h.tipo_cobranca.upper() }}</span></td>
+                            <td class="text-green"><strong>R$ {{ "%.2f"|format(h.valor_pago) }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <p class="empty-msg">Nenhuma saída registrada ainda.</p>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function filtrarTabela() {
+            const input = document.getElementById("filtroHistorico").value.toUpperCase();
+            const linhas = document.querySelectorAll("#tabelaHistorico tbody tr");
+            linhas.forEach(linha => {
+                const texto = linha.innerText.toUpperCase();
+                linha.style.display = texto.includes(input) ? "" : "none";
+            });
+        }
+    </script>
+
+</body>
+
+</html>
